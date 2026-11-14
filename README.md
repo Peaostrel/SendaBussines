@@ -88,6 +88,8 @@ One completed Trustless Work v2 multi-release escrow on Stellar testnet, funded 
 | Funding (10 USDC) | `85f1ab768c9813e8cc38d290a8153487e0eea5136acd5d5d435fc7faab30d8c6` | [Transaction](https://stellar.expert/explorer/testnet/tx/85f1ab768c9813e8cc38d290a8153487e0eea5136acd5d5d435fc7faab30d8c6) |
 | Release to the supplier | `367115d1d0e51896c8acb47dc0a113df0e8ae1a58fe26538ccc7b9bc2050cc83` | [Transaction](https://stellar.expert/explorer/testnet/tx/367115d1d0e51896c8acb47dc0a113df0e8ae1a58fe26538ccc7b9bc2050cc83) |
 
+Checked on 14 November 2026 against Horizon testnet (`/transactions/<hash>`). All three transactions exist, `successful` is true, and the source account is `GCNHPH5ADYHT2CNED26D7CTDALQOB3CD32J4AOZXFSGQ7LPT5QBAH5P5`. Funding debited 10 USDC from that account and credited contract `CDTGDYYYL2FGQODPMEB3RLADJGIY7C77BESFA5MQN6YVWLV27LLL2P2T`. Release credited 9.97 USDC to `GBT6M2N6VW5ZU6F765MCZDZG5GB5BOTUNFAGSVUV6E2N4IPHSDQVO2TO` and 0.03 USDC to `GDDL743M3SOW6GN4HOAKU5ACA7QN36ERFBXNHY5BS7HOR2DPOSGMRCYF`. The asset issuer on both effects is `GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5`.
+
 ## Architecture
 
 ```text
