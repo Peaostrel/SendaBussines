@@ -1,76 +1,77 @@
 # Senda Business
 
-** Your business is already crossing borders, your finances should work on a single platform **
-
-
+SME expense control and supplier payments, with Trustless Work escrow on Stellar testnet.
 
 ## Summary
 
-Senda Business is a financial operations platform for SMEs in Latin America.
+Senda Business is a testnet pilot for small and medium businesses that need one place to see their spending and pay a supplier.
 
-Each expense belongs to a project, is checked against the project's limit and receipt policy, and appears in real time with its receipt and category. The project budget is held and released through Stellar.
+The company signs in, registers a supplier payment, and funds it with testnet USDC. The USDC sits in a Trustless Work v2 multi-release escrow until the company releases the milestone. The supplier name and country stay off the public ledger.
+
+This repository does not yet do per-project spend limits, receipt rules, or scheduled settlement. Those are described below as targets, not as features that run today.
 
 ## Problem
 
-SMEs in Latin America run their money by hand, and what they can't see, they can't control.
+SMEs in Latin America still track a lot of their money by hand. The owner often sees the total only after the money has already left.
 
-Most SMEs spend by project, but they track that spending in notebooks, spreadsheets, chats and loose receipts. There is no limit per project, no rule on what can be bought, and no single place where the budget, the expenses and the receipts meet. The owner or finance lead sees the total after the money has already left.
-
-This is a financial education and financial control gap, and it shows up in the data:
+The public data behind that gap:
 
 - **Manual tools are the norm.** In Brazil, 43% of businesses manage their finances in a notebook or on paper (Sebrae, via Valor Econômico, 2020). In Ecuador, 45% use Excel or basic software and 17% work manually (Primicias).
 - **Financial education is low.** In Peru, only 17% of microentrepreneurs have a sufficient level of financial education, and 98% want training in financing, budgeting and planning (SBS, 2021).
 - **It costs businesses their survival.** In Brazil, about 40% of companies do not survive five years: 29% of MEIs, 21.6% of microenterprises and 17% of small businesses (Sebrae, 2023). Sebrae lists lack of planning and poor cash-flow management among the causes, and 48% of micro and small business closures are attributed to lack of financial planning and cash-flow control (Sebrae, cited by Terra, 2025). In Colombia, more than 50% of small companies fail within five years and 40% of ventures run by individuals close within their first year (Confecámaras, cited by Portafolio, 2020).
 - **The sector is the economy.** SMEs are about 99% of firms in Latin America and the Caribbean and about two thirds of jobs (IDB Invest, 2026).
 
-When the whole region's SMEs depend on notebooks and spreadsheets for their money, the losses are not a detail: they are what decides which businesses survive.
+What this pilot does about it, on Stellar testnet: it records a supplier payment and holds the USDC in escrow until the company releases it. It does not claim a fee reduction, a locked exchange rate, or settlement on a schedule.
 
 ## User
 
-SMEs in Latin America that spend by project, and the person who approves or controls those expenses.
+SMEs in Latin America, and the person who registers or releases a supplier payment.
 
-## Features (MVP)
+## Target features
 
-| Feature | What it does | Acceptance criterion |
+These are the product targets. The next table says what the code actually does.
+
+| Feature | What it would do | Acceptance criterion |
 | --- | --- | --- |
-| Spend limits | Sets how much can be spent per project, team or category. | An expense above the project's available balance is blocked and shows the reason. |
-| Automatic policies | Sets what can be spent and with which receipt. | An expense without the required receipt stays pending and the person who logged it is notified. |
-| Real-time visibility | Each expense appears immediately with its receipt and category. | Project balance and history update when the expense is logged. |
-| Receipts in one place | Upload and organize each expense's receipt from web or mobile. | Each expense shows its attached receipt. |
+| Spend limits | Set how much can be spent per project, team or category. | An expense above the project's available balance is blocked and shows the reason. |
+| Automatic policies | Set what can be spent and with which receipt. | An expense without the required receipt stays pending and the person who logged it is notified. |
+| Real-time visibility | Each expense appears with its receipt and category. | Project balance and history update when the expense is logged. |
+| Receipts in one place | Upload and organize each expense's receipt. | Each expense shows its attached receipt. |
 
-**Out of scope for the MVP:** payment routing, bank reconciliation, multi-source ledger, cards, WhatsApp assistant, treasury and multi-country support.
+**Not built:** per-project, team or category limits, receipt files, cards, bank reconciliation, a WhatsApp assistant, and more than one company book.
 
 ## Why Stellar
 
-Stellar holds and moves the money. It is not used as a data store.
+Stellar holds and moves the testnet USDC. It is not used as the business database.
 
-- **The budget is held in escrow.** Each supplier payment is locked in a Trustless Work v2 multi-release escrow funded with USDC on Stellar testnet. It reaches the supplier only when the company releases the milestone.
-- **Verifiable without exposing the business.** Funding and release produce transaction hashes, stored on each payment together with the escrow contract id. The public ledger copy is generic (`Cuenta por pagar` / `Pago`), and the supplier name and country stay off-chain. Only the SHA-256 of the payment details is stored.
-- **Wallet-based access.** Any Stellar account signs in through SEP-10 and Freighter.
-- **Existing ecosystem tools.** Escrow comes from Trustless Work, authentication from SEP-10 and signing from the Stellar SDK.
+- **The payment is held in escrow.** Each funded supplier payment is locked in a Trustless Work v2 multi-release escrow. It reaches the supplier when the company releases the milestone.
+- **The business details stay off the ledger.** Funding and release produce transaction hashes. The public copy is generic (`Cuenta por pagar` / `Pago`). The supplier name and country are not written to Stellar. The API stores a SHA-256 of the payment details.
+- **Wallet or Google sign-in.** A Stellar account signs a SEP-10 challenge with Freighter. Google sign-in is available when `NEXT_PUBLIC_PRIVY_APP_ID` is set. Any verified account can open the panel.
+- **Existing tools.** Escrow is Trustless Work v2 (beta). Authentication is SEP-10. Signing uses the Stellar SDK.
 
 ---
 
 ## What is built today
 
-The repository is a working vertical slice of the MVP, running on Stellar testnet. This is the honest status against the MVP table above.
+Checked against the code in this repository. Status names match what a reader can open.
 
-| MVP feature | Status | Where |
+| Area | Status | Where |
 | --- | --- | --- |
-| Spend limits | **Partial.** A monthly funding cap per company (`monthly_cap_usd`, default 50,000 USD) blocks any payment that would exceed it and returns *"Este pago supera el tope del mes."* Per project, team or category limits are not built yet. | `apps/api/src/escrow/monthly-cap.ts` |
-| Automatic policies | **Not yet.** Input validation exists (valid Stellar account, supplier is not the company account, whole USD amount, real due date). Receipt policies are not built yet. | `packages/shared/src/index.ts` |
-| Real-time visibility | **Working.** The dashboard (`/empresas/panel`) shows balance, payable, spend, international volume, cash flow, categories, upcoming payments, activity and country volumes. The data it reads comes from the company book in Supabase. | `apps/api/src/dashboard`, `apps/web/src/components/business/dashboard` |
-| Receipts in one place | **Not yet.** Each payment stores a SHA-256 of its details, not a receipt file. | `apps/api/src/store/payment-metadata.ts` |
-| Budget backed by Stellar | **Working on testnet.** A supplier payment is held in a Trustless Work v2 multi-release escrow funded with USDC, then released by the company. | `apps/api/src/escrow` |
+| Monthly funding cap | **Partial.** One cap per company (`monthly_cap_usd`, default 50,000 USD) blocks a payment that would exceed it and returns *"Este pago supera el tope del mes."* Limits per project, team or category are not built. | `apps/api/src/escrow/monthly-cap.ts` |
+| Input checks | **Partial.** The parser requires a valid Stellar account, a supplier that is not the company account, a whole USD amount and a real due date. Receipt policies are not built. | `packages/shared/src/index.ts` |
+| Company panel | **Partial.** `/empresas/panel` renders the company book: balance, payable, spend, cash flow, categories, payments, activity and country volumes. The layout still shows a demo label. An empty book shows zeros. | `apps/api/src/dashboard`, `apps/web/src/components/business/dashboard` |
+| Receipts | **Not built.** A payment stores a SHA-256 of its details, not a receipt file. | `apps/api/src/store/payment-metadata.ts` |
+| Escrow on testnet | **Built, and one run is recorded below.** A supplier payment can be held in a Trustless Work v2 multi-release escrow funded with testnet USDC, then released. Funding needs `TRUSTLESS_WORK_API_KEY`. | `apps/api/src/escrow` |
+| SEP-24 deposit, event log, metrics dashboard | **Not built.** They are the next sprint. They are not in this tree. | — |
 
 ## How a supplier payment works
 
-1. **Sign in.** The company signs a SEP-10 challenge with its Stellar wallet (Freighter). The API checks the signature and sets a signed `senda_session` cookie.
-2. **Register.** The company enters supplier name, Stellar account, country, amount in USD and due date. The payment is stored as `pending`, together with its activity row, in a single database transaction. A failed activity insert cannot leave an orphan payment.
-3. **Fund.** The API checks the monthly cap, claims the payment so two overlapping calls cannot move USDC twice, deploys a Trustless Work escrow (one milestone) and funds it with testnet USDC. The payment becomes `approved` with its escrow contract id and funding transaction hash. If funding fails after the escrow is deployed, a retry reuses the same contract.
-4. **Release.** The company approves and releases the milestone. The treasury signs the transaction on the server. The payment becomes `released` and leaves "Por pagar".
+1. **Sign in.** Google, or any Stellar account through SEP-10 and Freighter. The API checks the signature and sets a signed `senda_session` cookie.
+2. **Register.** The company enters supplier name, Stellar account, country, amount in USD and due date. The payment is stored as `pending`, together with its activity row, in one database transaction.
+3. **Fund.** The API checks the monthly cap, claims the payment so two overlapping calls cannot move USDC twice, deploys a Trustless Work escrow (one milestone) and funds it with testnet USDC. The payment becomes `approved` with its escrow contract id and funding transaction hash. If funding fails after the escrow is deployed, a retry reuses the same contract. The server signs with `TREASURY_SECRET`.
+4. **Release.** The company releases the milestone. The server signs that transaction too. The payment becomes `released`.
 
-Privacy: the public ledger copy is generic (`Cuenta por pagar` / `Pago`). The supplier name and country never go on Stellar. Only the SHA-256 hash of the payment details is stored for verification.
+Privacy: the public ledger copy is generic (`Cuenta por pagar` / `Pago`). The supplier name and country never go on Stellar. Only the SHA-256 of the payment details is stored.
 
 ```text
 pending ──fund──▶ approved ──release──▶ released
@@ -92,26 +93,26 @@ One completed Trustless Work v2 multi-release escrow on Stellar testnet, funded 
 ```text
 ┌────────────┐   cookie session    ┌──────────────┐        ┌────────────────┐
 │  apps/web  │ ──────────────────▶ │   apps/api   │ ─────▶ │    Supabase    │
-│  Next.js   │   (SEP-10 wallet)   │   Fastify    │        │ Postgres + RLS │
+│  Next.js   │   (SEP-10 / Google) │   Fastify    │        │ Postgres + RLS │
 └─────┬──────┘                     └──────┬───────┘        └────────────────┘
       │ Freighter                         │
       ▼                                   ▼
   Stellar wallet               Trustless Work v2 (beta) ──▶ Stellar testnet (USDC)
 ```
 
-- **`apps/web`**: Next.js 16 (App Router) + React 19 + Tailwind 4, with 3D dotted globes (three.js and react-three-fiber) and Framer Motion. The `/` route redirects to `/empresas`.
-- **`apps/api`**: Fastify 5 + Zod 4 + Stellar SDK 14, with Helmet and CORS (credentials). Data lives in Supabase through the service role. Tables have RLS on and no policies, so only the API can read them.
+- **`apps/web`**: Next.js 16 (App Router) + React 19 + Tailwind 4. The `/` route redirects to `/empresas`.
+- **`apps/api`**: Fastify 5 + Zod 4 + Stellar SDK 14, with Helmet and CORS (credentials). Data lives in Supabase through the service role. Tables have RLS on and no policies, so the anon and authenticated roles cannot read them.
 - **`packages/shared`**: route constants, dashboard types and the supplier payment parser shared by web and API.
-- **`contracts/senda`**: Soroban contract workspace. It is currently a starter (`hello`) with host-side tests. The escrow runs on Trustless Work contracts, not on this one.
-- **`supabase/migrations`**: the schema, the demo seed and the payment functions.
+- **`contracts/senda`**: Soroban workspace. It is a starter (`hello`) with host-side tests. The escrow runs on Trustless Work contracts, not on this one.
+- **`supabase/migrations`**: the schema. A later migration removes the demo company book.
 
 ### Web routes
 
 | Route | What it is |
 | --- | --- |
-| `/empresas` | Landing page for Senda Business |
-| `/empresas/ingresar` | Login with a Stellar wallet (Freighter) |
-| `/empresas/panel` | Company dashboard (requires a session) |
+| `/empresas` | Landing page |
+| `/empresas/ingresar` | Sign in with Google or a Stellar wallet (Freighter) |
+| `/empresas/panel` | Company panel (requires a session cookie) |
 
 ### API routes
 
@@ -119,16 +120,16 @@ One completed Trustless Work v2 multi-release escrow on Stellar testnet, funded 
 | --- | --- | --- |
 | `GET` | `/health` | Service status |
 | `GET` | `/stellar/network` | Network, Horizon and Soroban RPC URLs |
-| `POST` | `/business/sep10/challenge` | Returns a SEP-10 challenge for the company account |
+| `POST` | `/business/sep10/challenge` | Returns a SEP-10 challenge for an account |
 | `POST` | `/business/sep10/token` | Verifies the signed challenge and sets the session cookie |
-| `GET` | `/business/session` | Current session account |
+| `GET` | `/business/session` | Current session |
 | `DELETE` | `/business/session` | Logs out |
 | `GET` | `/business/dashboard` | Company book, with `region`, `range` and `categoryPeriod` filters |
 | `POST` | `/business/supplier-payments` | Registers a pending supplier payment |
 | `POST` | `/business/supplier-payments/:id/fund-escrow` | Deploys and funds the escrow |
 | `POST` | `/business/supplier-payments/:id/release-milestone` | Releases the milestone to the supplier |
 
-Every `/business/*` route except the SEP-10 ones needs a valid session for the company account.
+Every `/business/*` route except the SEP-10 challenge and token needs a valid session. The committed API does not restrict those routes to the treasury account.
 
 ### Database
 
@@ -136,12 +137,14 @@ Applied in order from `supabase/migrations`:
 
 | Migration | What it adds |
 | --- | --- |
-| `…senda_business_book` | Company book: `companies`, `supplier_payments`, `activity_entries`, KPIs, cash flow, categories, cards, country volumes, plus the demo company |
+| `…senda_business_book` | Company book: `companies`, `supplier_payments`, `activity_entries`, KPIs, cash flow, categories, cards, country volumes |
 | `…payment_metadata_and_cap` | `monthly_cap_usd`, payment hash, escrow and transaction columns, `sep10_nonces` |
 | `…supplier_payment_funded_at` | `funded_at`, used by the monthly cap |
 | `…supplier_payment_released_status` | The terminal `released` status |
 | `…register_supplier_payment` | One transaction for a payment and its activity row |
 | `…supplier_payment_funding_claim` | The atomic claim that prevents double funding |
+| `…supplier_payment_release_claim` | The atomic claim that prevents a double release |
+| `…remove_demo_book` | Removes the seeded demo company |
 
 ## Getting started
 
@@ -149,10 +152,10 @@ Applied in order from `supabase/migrations`:
 
 - Node.js 20+ (the Docker images use Node 22)
 - A Supabase project
-- A Trustless Work v2 beta API key
-- Freighter wallet (the login uses it)
+- A Trustless Work v2 beta API key, only if you fund or release an escrow
+- Freighter, or a Privy app id if you use Google sign-in
 - Rust 1.84+ with the `wasm32v1-none` target and the [Stellar CLI](https://developers.stellar.org/docs/tools/cli/install-cli), only if you work on the contracts
-- Docker (optional)
+- Docker (optional; see the note under Run)
 
 ### Setup
 
@@ -162,11 +165,11 @@ cp apps/api/.env.example apps/api/.env
 cp apps/web/.env.example apps/web/.env.local
 ```
 
-Apply the migrations in `supabase/migrations` to your Supabase project, then fill in the environment files.
+Apply the migrations in `supabase/migrations` to your Supabase project, then fill in the environment files. Do not commit them.
 
 ### Environment variables
 
-**`apps/api/.env`** (server only, never commit secrets)
+**`apps/api/.env`** (server only)
 
 | Variable | Purpose |
 | --- | --- |
@@ -175,19 +178,20 @@ Apply the migrations in `supabase/migrations` to your Supabase project, then fil
 | `STELLAR_NETWORK`, `HORIZON_URL`, `SOROBAN_RPC_URL` | Stellar network (default testnet) |
 | `SUPABASE_URL`, `SUPABASE_SECRET_KEY` | Supabase project and service key |
 | `SESSION_SECRET` | Signs the `senda_session` cookie. At least 32 characters |
-| `STELLAR_ADMIN_PUBLIC` | The company treasury. It signs funding and release. Any Stellar account can sign in |
+| `STELLAR_ADMIN_PUBLIC` | Treasury account. Its secret signs funding and release |
 | `SEP10_SIGNING_SECRET` | Server key for SEP-10 challenges. Must be a different account from `STELLAR_ADMIN_PUBLIC` |
 | `SEP10_HOME_DOMAIN` | SEP-10 home domain (default `localhost`) |
-| `TRUSTLESS_WORK_API_KEY` | Trustless Work v2 beta key |
-| `TREASURY_SECRET` | Secret key of `STELLAR_ADMIN_PUBLIC`. Signs funding and release |
+| `TRUSTLESS_WORK_API_KEY` | Trustless Work v2 beta key. Empty skips live funding |
+| `TREASURY_SECRET` | Secret key of `STELLAR_ADMIN_PUBLIC`. The server uses it to sign funding and release |
 | `ESCROW_ADMIN_SECRET`, `ESCROW_DISPUTE_RESOLVER_SECRET` | Escrow admin and dispute resolver roles. Their public keys are derived at startup |
 
-The API refuses to start if the SEP-10 signer is the company account, or if the company account, the escrow admin and the dispute resolver are not distinct. `TREASURY_SECRET` must belong to `STELLAR_ADMIN_PUBLIC`, or signing fails.
+The API refuses to start if the SEP-10 signer is the company account, or if the company account, the escrow admin and the dispute resolver are not distinct.
 
-**`apps/web/.env.local`** (server only, do not prefix with `NEXT_PUBLIC_`)
+**`apps/web/.env.local`**
 
 | Variable | Purpose |
 | --- | --- |
+| `NEXT_PUBLIC_PRIVY_APP_ID` | Privy app id. Google sign-in stays off when this is empty |
 | `API_URL` | API origin the panel calls (default `http://127.0.0.1:4000`) |
 | `STELLAR_ADMIN_PUBLIC` | Same company account as the API. The form rejects it as a supplier |
 
@@ -198,14 +202,24 @@ npm run dev:api   # API on :4000
 npm run dev:web   # Web on :3000
 ```
 
-Open http://localhost:3000, sign in with any Freighter wallet, and go to the panel.
-
-With Docker:
+Open http://localhost:3000 and sign in. The panel is `/empresas/panel`.
 
 ```bash
 npm run docker:up
 npm run docker:down
 ```
+
+Compose starts the dev servers. It does not pass `ESCROW_ADMIN_SECRET` or `ESCROW_DISPUTE_RESOLVER_SECRET`, and the web service sets `NEXT_PUBLIC_API_URL` while the panel reads `API_URL`. The API will not boot, and the panel will not reach it, until those are set for the containers.
+
+### Test
+
+```bash
+npm test          # API tests, then cargo test
+npm run lint      # API and shared type-check, web eslint
+npm run build
+```
+
+API tests use `node --test` and an in-memory store. They do not call Horizon or Trustless Work. `npm test` also runs `cargo test` for `contracts/senda`. On Windows, Application Control can block the host `cargo` binary; the API suite can still be run with `npm test -w @senda/api`.
 
 ### Scripts
 
@@ -217,6 +231,8 @@ npm run docker:down
 | `npm test` | API tests (`node --test`) and `cargo test` |
 | `npm run contracts:build` | `stellar contract build` |
 | `npm run contracts:test` | `cargo test` |
+| `npm run docker:up` | `docker compose up -d` |
+| `npm run docker:down` | `docker compose down` |
 
 ## Soroban contract
 
@@ -234,6 +250,8 @@ stellar contract deploy \
   --network testnet \
   --alias senda
 ```
+
+The deployed `hello` contract is not the payment path.
 
 ## Repository layout
 
@@ -254,7 +272,7 @@ stellar contract deploy \
 ├── contracts/
 │   └── senda/        # Soroban contract (starter)
 ├── supabase/
-│   └── migrations/   # SQL schema and seed
+│   └── migrations/   # SQL schema
 ├── Cargo.toml        # Rust workspace (contracts)
 ├── package.json      # npm workspaces (apps + packages)
 └── docker-compose.yml
@@ -272,18 +290,18 @@ Quick contribution guide
 
 ## Security notes
 
-- Secrets are server only. Nothing sensitive is prefixed with `NEXT_PUBLIC_`.
-- The session is a signed cookie (`HttpOnly`, `SameSite=Lax`, `Secure` in production) tied to the company account. SEP-10 nonces are single use and expire.
-- Supabase tables have RLS enabled with no policies. `anon` and `authenticated` have no access, and only the service role reads and writes.
-- The treasury signs one Soroban contract call and nothing else. The signer rejects fee bumps, transactions with more than one operation, any operation other than `invokeHostFunction`, and any source other than the treasury. It signs the XDR returned by Trustless Work without rebuilding it.
-- The payment is claimed atomically before calling Trustless Work, so overlapping requests cannot move USDC twice. A retry reuses the deployed escrow and re-reads pending transactions instead of resubmitting.
+- Secrets stay on the server. The only `NEXT_PUBLIC_` value is the Privy app id.
+- Any verified Google account or Stellar wallet can open a session and call the panel and the payment routes. The session is a signed cookie (`HttpOnly`, `SameSite=Lax`, `Secure` in production).
+- SEP-10 nonces are single use. With a real Supabase URL they are stored in `sep10_nonces`. The in-memory store is used in tests and when the Supabase host is the placeholder `example.supabase.co`.
+- Supabase tables have RLS enabled with no policies. `anon` and `authenticated` have no access. The API uses the service role.
+- The treasury signer accepts one Soroban `invokeHostFunction` and rejects fee bumps, extra operations, and any source other than the treasury. It signs the XDR returned by Trustless Work.
+- The payment is claimed before the Trustless Work call, so overlapping requests cannot move the same USDC twice.
 - The company account, the SEP-10 signer, the escrow admin and the dispute resolver must be different accounts.
+- `TREASURY_SECRET` is on the API host. That is acceptable for this testnet pilot. It is not a mainnet design: the server can sign a funding or release for any valid session.
 
 ### Known limitations
 
-- SEP-10 nonces are kept in the API process memory (`apps/api/src/auth/nonce-store.ts`). The `sep10_nonces` table exists in the schema but the API does not use it.
-- `TREASURY_SECRET` is read from the API environment to sign funding and release.
+- There is one company book, not one book per signed-in account.
 - The monthly cap is per company. Limits per project, team or category are not implemented.
 - Receipts and receipt policies are not implemented.
-
-
+- `contracts/senda` is a `hello` starter. Money moves through Trustless Work.
