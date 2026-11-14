@@ -26,19 +26,28 @@ export function LoginForm() {
     const state = params.get("privy_oauth_state");
     if (!code || !state) return;
     window.history.replaceState(null, "", window.location.pathname);
-    setPending("google");
+    let cancelled = false;
     void import("@/lib/privy-google")
-      .then(({ completeGoogleLogin, googleLoginMessage }) =>
-        completeGoogleLogin(code, state).then(
+      .then(({ completeGoogleLogin, googleLoginMessage }) => {
+        if (cancelled) return;
+        setPending("google");
+        return completeGoogleLogin(code, state).then(
           () => startNavigation(() => router.push(BUSINESS_DASHBOARD_PATH)),
           (caught: unknown) => {
             const message = googleLoginMessage(caught);
             if (message) setError(message);
           },
-        ),
-      )
-      .catch(() => setError(GOOGLE_FAILED))
-      .finally(() => setPending(null));
+        );
+      })
+      .catch(() => {
+        if (!cancelled) setError(GOOGLE_FAILED);
+      })
+      .finally(() => {
+        if (!cancelled) setPending(null);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [router, startNavigation]);
 
   async function onEnter() {
