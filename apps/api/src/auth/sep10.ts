@@ -43,7 +43,7 @@ export async function redeemSep10Challenge(input: {
   homeDomain: string;
   networkPassphrase: string;
   nonces: NonceStore;
-}): string | null {
+}): Promise<string | null> {
   try {
     const serverAccount = input.serverKeypair.publicKey();
     const details = WebAuth.readChallengeTx(

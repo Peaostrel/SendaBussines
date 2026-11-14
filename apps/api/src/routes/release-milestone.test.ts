@@ -17,6 +17,7 @@ import { buildApp } from "../app.js";
 import { loadEnv } from "../config/env.js";
 import type { EscrowRecord, ReleaseEscrowInput } from "../escrow/client.js";
 import { EscrowClientError, RELEASE_FAILED } from "../escrow/errors.js";
+import type { EscrowFundClient } from "../escrow/fund-supplier-payment.js";
 import type { EscrowReleaseClient } from "../escrow/release-supplier-payment.js";
 import { DEMO_BOOK } from "../store/seed.js";
 import { createMemoryBusinessStore, type MemoryBusinessStore } from "../store/memory.js";
@@ -29,7 +30,7 @@ const SUPPLIER_NAME = "Taller Norte";
 const NO_DEPOSIT = "Este pago no tiene un depósito para liberar.";
 const ALREADY_RELEASED = "Este hito ya fue liberado.";
 
-class FakeReleaseEscrow implements EscrowReleaseClient {
+class FakeReleaseEscrow implements EscrowFundClient, EscrowReleaseClient {
   readonly releases: ReleaseEscrowInput[] = [];
   error: Error | null = null;
   released = true;
@@ -40,6 +41,14 @@ class FakeReleaseEscrow implements EscrowReleaseClient {
   }
 
   async fund(): Promise<EscrowRecord> {
+    throw new Error("release tests do not fund");
+  }
+
+  async readDeploy(): Promise<EscrowRecord> {
+    throw new Error("release tests do not deploy");
+  }
+
+  async readFund(): Promise<EscrowRecord> {
     throw new Error("release tests do not fund");
   }
 
@@ -129,7 +138,7 @@ async function withReleaseApi(
       store,
       escrow,
       supplier,
-      token: signSession("GTEST", SESSION_SECRET),
+      token: signSession(admin, SESSION_SECRET),
     });
   } finally {
     await app.close();

@@ -1,0 +1,11 @@
+node_modules
+.git
+.next
+dist
+target
+.env
+.env.*
+!.env.example
+apps/api/.env
+apps/web/.env.local
+*.log

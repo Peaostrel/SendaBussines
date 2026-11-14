@@ -211,7 +211,7 @@ npm run docker:up
 npm run docker:down
 ```
 
-Compose starts the dev servers. It does not pass `ESCROW_ADMIN_SECRET` or `ESCROW_DISPUTE_RESOLVER_SECRET`, and the web service sets `NEXT_PUBLIC_API_URL` while the panel reads `API_URL`. The API will not boot, and the panel will not reach it, until those are set for the containers.
+Compose starts the dev servers. It does not pass `ESCROW_ADMIN_SECRET` or `ESCROW_DISPUTE_RESOLVER_SECRET`, and the web service sets `NEXT_PUBLIC_API_URL` while the panel reads `API_URL`. The API will not boot, and the panel will not reach it, until those are set for the containers. The image build ignores `.env` files (`.dockerignore`).
 
 ### Test
 
@@ -273,6 +273,7 @@ The deployed `hello` contract is not the payment path.
 │   └── shared/       # Types, routes and the supplier payment parser
 ├── contracts/
 │   └── senda/        # Soroban contract (starter)
+├── docs/             # Risks, decisions, and the evidence skeleton
 ├── supabase/
 │   └── migrations/   # SQL schema
 ├── Cargo.toml        # Rust workspace (contracts)
