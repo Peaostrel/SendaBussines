@@ -260,6 +260,16 @@ stellar contract deploy \
 └── docker-compose.yml
 ```
 
+## 🤝 Contributing
+Contributions are welcome! Please check CONTRIBUTING.md for detailed guidelines.
+
+Quick contribution guide
+1. Fork the repository
+2. Create your feature branch: git checkout -b feature/amazing-feature
+3. Commit your changes: git commit -m 'feat: add amazing feature'
+4. Push to the branch: git push origin feature/amazing-feature
+5. Open a pull request
+
 ## Security notes
 
 - Secrets are server only. Nothing sensitive is prefixed with `NEXT_PUBLIC_`.
