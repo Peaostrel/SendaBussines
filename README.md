@@ -283,7 +283,7 @@ The deployed `hello` contract is not the payment path.
 ```
 
 ## 🤝 Contributing
-Contributions are welcome! Please check CONTRIBUTING.md for detailed guidelines.
+Contributions are welcome! Please check [CONTRIBUTING](./CONTRIBUTING.md) for detailed guidelines.
 
 Quick contribution guide
 1. Fork the repository
