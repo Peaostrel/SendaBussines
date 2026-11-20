@@ -303,9 +303,3 @@ Quick contribution guide
 - The company account, the SEP-10 signer, the escrow admin and the dispute resolver must be different accounts.
 - `TREASURY_SECRET` is on the API host. That is acceptable for this testnet pilot. It is not a mainnet design: the server can sign a funding or release for any valid session.
 
-### Known limitations
-
-- There is one company book, not one book per signed-in account.
-- The monthly cap is per company. Limits per project, team or category are not implemented.
-- Receipts and receipt policies are not implemented.
-- `contracts/senda` is a `hello` starter. Money moves through Trustless Work.
