@@ -283,7 +283,7 @@ The deployed `hello` contract is not the payment path.
 ```
 
 ## 🤝 Contributing
-Contributions are welcome! Please check CONTRIBUTING.md for detailed guidelines.
+Contributions are welcome! Please check [CONTRIBUTING](./CONTRIBUTING.md) for detailed guidelines.
 
 Quick contribution guide
 1. Fork the repository
@@ -292,4 +292,6 @@ Quick contribution guide
 4. Push to the branch: git push origin feature/amazing-feature
 5. Open a pull request
 
+## License
 
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
