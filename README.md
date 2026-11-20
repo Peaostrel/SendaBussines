@@ -292,14 +292,4 @@ Quick contribution guide
 4. Push to the branch: git push origin feature/amazing-feature
 5. Open a pull request
 
-## Security notes
-
-- Secrets stay on the server. The only `NEXT_PUBLIC_` value is the Privy app id.
-- Any verified Google account or Stellar wallet can open a session and call the panel and the payment routes. The session is a signed cookie (`HttpOnly`, `SameSite=Lax`, `Secure` in production).
-- SEP-10 nonces are single use. With a real Supabase URL they are stored in `sep10_nonces`. The in-memory store is used in tests and when the Supabase host is the placeholder `example.supabase.co`.
-- Supabase tables have RLS enabled with no policies. `anon` and `authenticated` have no access. The API uses the service role.
-- The treasury signer accepts one Soroban `invokeHostFunction` and rejects fee bumps, extra operations, and any source other than the treasury. It signs the XDR returned by Trustless Work.
-- The payment is claimed before the Trustless Work call, so overlapping requests cannot move the same USDC twice.
-- The company account, the SEP-10 signer, the escrow admin and the dispute resolver must be different accounts.
-- `TREASURY_SECRET` is on the API host. That is acceptable for this testnet pilot. It is not a mainnet design: the server can sign a funding or release for any valid session.
 
