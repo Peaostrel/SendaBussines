@@ -1,6 +1,7 @@
 # Senda Business
 
-SME expense control and supplier payments, with Trustless Work escrow on Stellar testnet.
+Tu negocio ya cruza fronteras ,tus finanzas deberian funcionar en una sola plataforma 
+
 
 ## Summary
 
