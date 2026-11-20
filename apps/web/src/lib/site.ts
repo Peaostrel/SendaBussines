@@ -2,9 +2,9 @@ export const site = {
   name: "Senda",
   email: "hola@withsenda.site",
   mailto: "mailto:hola@withsenda.site",
-  linkedin: "https://www.linkedin.com/company/senda",
-  instagram: "https://www.instagram.com/senda",
-  x: "https://x.com/senda",
+  linkedin: "https://www.linkedin.com/company/senda-labs/posts/?feedView=all",
+  instagram: "https://www.instagram.com/withsenda/",
+  x: "https://x.com/withsenda_",
 } as const;
 
 export const BUSINESS_PATH = "/empresas";
