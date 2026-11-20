@@ -13,7 +13,7 @@ This repository does not yet do per-project spend limits, receipt rules, or sche
 
 ## Problem
 
-SMEs in Latin America still track a lot of their money by hand. The owner often sees the total only after the money has already left.
+In Latin America, many small and medium-sized enterprises (SMEs) still manage a large portion of their finances manually. Often, the business owner only learns the final amount after the money has already left the account. I’ve seen this same scenario a thousand times: a company invoicing clients abroad, working with suppliers in three different countries, and losing both time and money every time it moves funds across borders—slow wire transfers, exchange rates that no one understands, and hidden fees that only surface later.
 
 The public data behind that gap:
 
