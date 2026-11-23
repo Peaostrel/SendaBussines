@@ -1,7 +1,7 @@
 import { BusinessGlobeStage } from "@/components/business/globe-stage";
 import { Shell } from "@/components/shell";
 import { Button } from "@/components/ui/button";
-import { getBusinessMailto } from "@/lib/site";
+import { BUSINESS_CTA } from "@/lib/site";
 
 export function BusinessGlobeSection() {
   return (
@@ -17,9 +17,9 @@ export function BusinessGlobeSection() {
             Combiná la visibilidad en tiempo real con la facilidad global para
             controlar cada transacción, cada presupuesto, cada mercado.
           </p>
-          <a href={getBusinessMailto()} className="mt-8 inline-flex">
+          <a href={BUSINESS_CTA.information.href} className="mt-8 inline-flex">
             <Button as="span" variant="senda" size="cta">
-              Solicitar ahora
+              {BUSINESS_CTA.information.label}
             </Button>
           </a>
         </div>

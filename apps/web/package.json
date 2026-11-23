@@ -6,7 +6,8 @@
     "dev": "next dev --port 3000",
     "build": "next build",
     "start": "next start --port 3000",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:ctas": "node --test tests/landing-ctas.test.mjs"
   },
   "dependencies": {
     "@privy-io/js-sdk-core": "^0.79.4",

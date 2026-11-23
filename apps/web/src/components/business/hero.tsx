@@ -6,12 +6,11 @@ import {
   Shield,
   Zap,
 } from "lucide-react";
-import Link from "next/link";
 
 import { BusinessHeroStage } from "@/components/business/hero-stage";
 import { Shell } from "@/components/shell";
 import { Button } from "@/components/ui/button";
-import { BUSINESS_LOGIN_PATH, getBusinessMailto } from "@/lib/site";
+import { BUSINESS_CTA } from "@/lib/site";
 
 const pillars = [
   {
@@ -64,7 +63,7 @@ export function BusinessHero() {
               en el que operes.
             </p>
             <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:flex-nowrap">
-              <a href={getBusinessMailto()}>
+              <a href={BUSINESS_CTA.contact.href}>
                 <Button
                   as="span"
                   variant="cream"
@@ -72,21 +71,24 @@ export function BusinessHero() {
                   className="min-h-11 px-5 text-[0.95rem]"
                 >
                   <Mail className="size-4" aria-hidden />
-                  Correo electrónico corporativo
+                  {BUSINESS_CTA.contact.label}
                 </Button>
               </a>
-              <Link href={BUSINESS_LOGIN_PATH}>
+              <a href={BUSINESS_CTA.waitlist.href} aria-describedby="waitlist-email-note">
                 <Button
                   as="span"
                   variant="ghostForest"
                   size="md"
                   className="min-h-11 px-5 text-[0.95rem]"
                 >
-                  Unirme a la lista de espera
+                  {BUSINESS_CTA.waitlist.label}
                   <ArrowRight className="size-4" aria-hidden />
                 </Button>
-              </Link>
+              </a>
             </div>
+            <p id="waitlist-email-note" className="mt-3 max-w-[55ch] text-sm leading-relaxed text-white/75">
+              {BUSINESS_CTA.waitlist.note}
+            </p>
           </div>
 
           <BusinessHeroStage />
